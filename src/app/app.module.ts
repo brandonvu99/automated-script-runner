@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { TimelineComponent } from './components/timeline/timeline.component';
 import { TimelineItemComponent } from './components/timeline-item/timeline-item.component';
 
+import { NgxElectronModule } from 'ngx-electron';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { TimelineItemComponent } from './components/timeline-item/timeline-item.
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgxElectronModule
   ],
   providers: [],
   bootstrap: [AppComponent]

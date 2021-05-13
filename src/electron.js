@@ -14,7 +14,11 @@ const createWindow = () => {
         win = new BrowserWindow({
             width: 800,
             height: 600,
-            icon: './src/favicon.ico'
+            icon: './src/favicon.ico',
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false
+            }
         });
 
         // and load the app.
@@ -60,21 +64,38 @@ app.on('activate', () => {
 
 let spawn = require("child_process").spawn;
 
-ipcMain.on("ping", (event, messageFromAngular) => {
+ipcMain.on("pinger", (event, messageFromAngular) => {
     console.log("[electron] pong", messageFromAngular);
-    let bat = spawn("ping", [
+    let command = spawn("ping", [
         "127.0.0.1"
     ]);
 
-    bat.stdout.on("data", (data) => {
+    command.stdout.on("data", (data) => {
         console.log(`handle data ${data}`)
     });
 
-    bat.stderr.on("data", (err) => {
+    command.stderr.on("data", (data) => {
         console.log(`handle error ${err}`)
     });
 
-    bat.on("exit", (code) => {
+    command.on("exit", (code) => {
         console.log("handle exit")
+    });
+})
+
+ipcMain.on("shell command", (event, commandToRun) => {
+    console.log("messageFromAngular: ", commandToRun);
+    let command = spawn(commandToRun, { shell: true });
+
+    command.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`);
+    });
+
+    command.stderr.on('data', (data) => {
+        console.error(`stderr: ${data}`);
+    });
+
+    command.on('close', (code) => {
+        console.log(`child process exited with code ${code}`);
     });
 })
