@@ -2,7 +2,7 @@
     <div class="wrapper">
         <h1> Which scripts run at which times?</h1>
         <ul class="sessions">
-            <li *ngFor="let script of scripts">
+            <li *ngFor="let script of scripts; trackBy: trackScript">
                 <div class="time">{{ script.timeToRun.toLocaleString(dateTimeFormatter) }}</div>
                 <p>
                     {{ script.name }}
