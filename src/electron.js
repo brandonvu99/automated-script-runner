@@ -1,6 +1,52 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } = require('electron');
 const path = require('path');
 const url = require('url');
+const spawn = require("child_process").spawn;
+
+
+class TrayMenu {
+    // Create a variable to store our tray
+    // Public: Make it accessible outside of the class;
+    // Readonly: Value can't be changed
+    tray;
+
+    // Path where should we fetch our icon;
+    iconPath = '/assets/clock-icon.png';
+
+    constructor() {
+        this.tray = new Tray(this.createNativeImage());
+        // We need to set the context menu to our tray
+        this.tray.setContextMenu(this.createMenu());
+    }
+
+    createNativeImage() {
+        // Since we never know where the app is installed,
+        // we need to add the app base path to it.
+        const path = `${app.getAppPath()}${this.iconPath}`;
+        const image = nativeImage.createFromPath(path);
+        // Marks the image as a template image.
+        image.setTemplateImage(true);
+        return image;
+    }
+
+    createMenu() {
+        // This method will create the Menu for the tray
+        const contextMenu = Menu.buildFromTemplate([{
+                label: 'Tokei',
+                type: 'normal',
+                click: () => {
+                    /* Later this will open the Main Window */
+                }
+            },
+            {
+                label: 'Quit',
+                type: 'normal',
+                click: () => app.quit()
+            }
+        ]);
+        return contextMenu;
+    }
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -43,6 +89,14 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+const appElements = {
+    tray: null,
+    windows: []
+};
+
+app.on('ready', () => {
+    appElements.tray = new TrayMenu();
+});
 app.on('ready', createWindow);
 
 // Quit when all windows are closed.
@@ -61,27 +115,6 @@ app.on('activate', () => {
         createWindow();
     }
 });
-
-let spawn = require("child_process").spawn;
-
-ipcMain.on("pinger", (event, messageFromAngular) => {
-    console.log("[electron] pong", messageFromAngular);
-    let command = spawn("ping", [
-        "127.0.0.1"
-    ]);
-
-    command.stdout.on("data", (data) => {
-        console.log(`handle data ${data}`)
-    });
-
-    command.stderr.on("data", (data) => {
-        console.log(`handle error ${err}`)
-    });
-
-    command.on("exit", (code) => {
-        console.log("handle exit")
-    });
-})
 
 ipcMain.on("shell command", (event, commandToRun) => {
     console.log("messageFromAngular: ", commandToRun);
