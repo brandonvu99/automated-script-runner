@@ -15,20 +15,6 @@ import { IpcRenderer } from 'electron';
 export class TimelineComponent implements OnInit {
 
   scripts:ScheduledScript[] = [];
-  // [
-  //   new ScheduledScript(
-  //     DateTime.now(),
-  //     "Backup iTunes Library",
-  //     "Runs a python script to copy my iTunes .itl Library file into my Google Drive",
-  //     "echo hi i'm gay"
-  //   ),
-  //   new ScheduledScript(
-  //     DateTime.now().minus({minutes: 15}),
-  //     "other thing",
-  //     "other description",
-  //     "echo hi i'm actually gay"
-  //   )
-  // ];
   timer:Subscription = new Subscription();
   dateTimeFormatter = DateTime.TIME_SIMPLE;
   private ipc: IpcRenderer;
@@ -53,14 +39,13 @@ export class TimelineComponent implements OnInit {
           script_info[3]
         ));
       }
+      this.scripts.sort((a,b) => a.timeToRun.toMillis() - b.timeToRun.toMillis())
       this.changeDetection.detectChanges();
     });
     this.ipc.send('csv data');
 
     console.log(this.scripts)
 
-
-    this.scripts.sort((a,b) => a.timeToRun.toMillis() - b.timeToRun.toMillis())
     this.timer = timer(0, 1*60*1000).subscribe( _ => {
       console.log('Checking for scripts to run.')
       this.runScriptsIfIsTime()
@@ -68,14 +53,13 @@ export class TimelineComponent implements OnInit {
     })
   }
 
-  hasSameHourAndSameMinuteAsNow(a:DateTime): boolean {
-    let now = DateTime.now()
-    return (now.hour === a.hour) && (now.minute === a.minute)
-  }
-
   runScriptsIfIsTime(): void {
+    let hasSameHourAndSameMinuteAsNow = function(a:DateTime): boolean {
+      let now = DateTime.now()
+      return (now.hour === a.hour) && (now.minute === a.minute)
+    }
     this.scripts.forEach((script, index) => {
-      if (this.hasSameHourAndSameMinuteAsNow(script.timeToRun)) {
+      if (hasSameHourAndSameMinuteAsNow(script.timeToRun)) {
         this.electronService.ipcRenderer.send("shell command", script.commandToRun)
       }
     })
