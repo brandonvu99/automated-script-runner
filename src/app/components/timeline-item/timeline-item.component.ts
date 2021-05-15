@@ -16,6 +16,7 @@ export class TimelineItemComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    console.log(this.script)
   }
 
 }

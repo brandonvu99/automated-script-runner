@@ -1,11 +1,15 @@
 <div class="time">
-    {{ script.timeToRun.toLocaleString(dateTimeFormatter) }}</div>
-<p>
-    {{ script.name }}
-</p>
-<p>
+    {{ script.timeToRun.toLocaleString(dateTimeFormatter) }}
+</div>
+<div>
+    <b>{{ script.name }}</b>
+</div>
+<div>
     {{ script.description }}
-</p>
-<p>
+</div>
+<div>
+    Working Directory: {{ script.commandWorkingDirectory }}
+</div>
+<div>
     Command: {{ script.commandToRun }}
-</p>
+</div>

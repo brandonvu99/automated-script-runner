@@ -1,3 +1,3 @@
-timeToRun,name,description,commandToRun
-20:05:00,Backup iTunes Library,Runs a python script to copy my iTunes .itl Library file into my Google Drive,echo hi i'm gay
-19:50:00,Before Script, Just a Dummy Script to test sorting the scripts by time,echo other script is gay
+timeToRun,name,description,commandWorkingDirectory,commandToRun
+20:05:00,Backup iTunes Library,Runs a python script to copy my iTunes .itl Library file into my Google Drive,C:\Users\Brandon\Desktop\itunes backups mock,python backup_itunes.py
+19:50:00,Before Script, Just a Dummy Script to test sorting the scripts by time,C:\Users\Brandon\Desktop\itunes backups mock,echo other script is gay

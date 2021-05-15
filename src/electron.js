@@ -117,9 +117,9 @@ app.on('activate', () => {
     }
 });
 
-ipcMain.on("shell command", (event, commandToRun) => {
-    console.log("messageFromAngular: ", commandToRun);
-    let command = spawn(commandToRun, { shell: true });
+ipcMain.on("shell command", (event, commandWorkingDirectory, commandToRun) => {
+    console.log(`commandWorkingDirectory: ${commandWorkingDirectory}\ncommandToRun: ${commandToRun}`);
+    let command = spawn(commandToRun, { shell: true, cwd: commandWorkingDirectory });
 
     command.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
